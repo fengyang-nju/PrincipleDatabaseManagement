@@ -2,10 +2,10 @@
 #include <string>
 #include <cassert>
 #include <sys/stat.h>
-#include <stdlib.h> 
+#include <stdlib.h>
 #include <string.h>
 #include <stdexcept>
-#include <stdio.h> 
+#include <stdio.h>
 
 #include "pfm.h"
 #include "rbfm.h"
@@ -54,9 +54,9 @@ int main()
 {
 	// To test the functionality of the paged file manager
     PagedFileManager *pfm = PagedFileManager::instance();
-    
+
     remove("test3");
-    
+
     RC rcmain = RBFTest_3(pfm);
     return rcmain;
 }

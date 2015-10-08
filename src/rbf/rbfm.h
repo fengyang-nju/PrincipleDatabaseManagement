@@ -136,6 +136,7 @@ public:
   void insertSlotItemInfo(const void *pageData, byte startSlotIndex, byte occupiedSlotNum); // append the slot item information at the tail of page
 
   unsigned calculateRecordLength(const vector<Attribute> &recordDescriptor, const void *data, DataType type);
+  RC printRecordInStoreFormat(const vector<Attribute> &recordDescriptor, const void *recordData);
 
 private:
   void readInteger(void* data, int offset, int& value);

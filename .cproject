@@ -45,7 +45,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="src/rbf/rbftest1.cc|src/rbf/rbftest9.cc|src/rbf/rbftest8b.cc|src/rbf/rbftest8.cc|src/rbf/rbftest7.cc|src/rbf/rbftest6.cc|src/rbf/rbftest5.cc|src/rbf/rbftest4.cc|src/rbf/rbftest12.cc|src/rbf/rbftest11.cc|src/rbf/rbftest10.cc" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="src/rbf/rbftest8.cc|src/rbf/rbftest5.cc|src/rbf/rbftest3.cc|src/rbf/rbftest2.cc|src/rbf/rbftest1.cc|src/rbf/rbftest9.cc|src/rbf/rbftest8b.cc|src/rbf/rbftest7.cc|src/rbf/rbftest6.cc|src/rbf/rbftest4.cc|src/rbf/rbftest12.cc|src/rbf/rbftest10.cc" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -93,7 +93,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="src/rbf/rbftest1.cc|src/rbf/rbftest9.cc|src/rbf/rbftest8b.cc|src/rbf/rbftest8.cc|src/rbf/rbftest7.cc|src/rbf/rbftest6.cc|src/rbf/rbftest5.cc|src/rbf/rbftest4.cc|src/rbf/rbftest12.cc|src/rbf/rbftest11.cc|src/rbf/rbftest10.cc" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="src/rbf/rbftest8.cc|src/rbf/rbftest5.cc|src/rbf/rbftest3.cc|src/rbf/rbftest2.cc|src/rbf/rbftest1.cc|src/rbf/rbftest9.cc|src/rbf/rbftest8b.cc|src/rbf/rbftest7.cc|src/rbf/rbftest6.cc|src/rbf/rbftest4.cc|src/rbf/rbftest12.cc|src/rbf/rbftest10.cc" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

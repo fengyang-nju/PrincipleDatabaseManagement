@@ -87,8 +87,8 @@ public:
      * Notes:
      * 1. The index of file number starts from 0;
      * */
-    void appendNewPage();
-    void loadPageHeaderInfos(PageNum pageNum, byte& recordNum, byte& nextAvailableSlotIndex);  // load the pageHeader information into data
+    RC appendNewPage();
+    RC loadPageHeaderInfos(PageNum pageNum, byte& recordNum, byte& nextAvailableSlotIndex);  // load the pageHeader information into data
     void loadPageHeaderInfos(const void *pageData, byte& recordNum, byte& nextAvailableSlotIndex);  // override
     void updatePageHeaderInfos(const void *pageData, byte slotNum, byte nextAvailableSlotIndex);  // update the page header information of the last two bytes of the page data
 

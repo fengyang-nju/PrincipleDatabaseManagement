@@ -16,3 +16,4 @@ config.tex
 *.sublime-project
 *.sublime-workspace
 /Debug/*
+/Debug/

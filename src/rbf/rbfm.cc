@@ -64,7 +64,7 @@ RC RecordBasedFileManager::insertRecord(FileHandle &fileHandle, const vector<Att
 		return -1;
 	}
 
-	memcpy((void *)(pageData + insertSlotIndex * SLOT_SIZE), (char *)data, recordLength);
+	memcpy((void *)(pageData + insertSlotIndex * SLOT_SIZE), (char *)recordData, recordLength);
 
 	this->insertSlotItemInfo(pageData, insertSlotIndex, occupiedSlotNum);
 	fileHandle.updatePageHeaderInfos(pageData,rid.slotNum+1,insertSlotIndex+occupiedSlotNum);
@@ -87,12 +87,19 @@ RC RecordBasedFileManager::readRecord(FileHandle &fileHandle, const vector<Attri
 	byte occupiedSlotNum;
 	this->loadSlotItemInfos(pageData, rid.slotNum, startSlotIndex, occupiedSlotNum);
 
-	byte *content = (byte *)(pageData + startSlotIndex * SLOT_SIZE);
+	byte* recordContent = new byte[PAGE_SIZE];
+	memcpy(recordContent, (byte*)pageData + startSlotIndex * SLOT_SIZE,occupiedSlotNum * SLOT_SIZE);
+	byte* apiDataTemp = new byte[PAGE_SIZE];
+	this->convertStoreFormat2APIData(recordDescriptor,recordContent,apiDataTemp);
 
-	unsigned storedRecordSize = 0;
-	memcpy(data, content, storedRecordSize);
+	unsigned APIDataSize = this->calculateRecordLength(recordDescriptor,apiDataTemp,API);
+	//unsigned storeRecordSize = APIDataSize+sizeof(int) + sizeof(int)*recordDescriptor.size();
 
-	free(pageData);
+	memcpy(data, apiDataTemp, APIDataSize);
+
+	delete[] pageData;
+	delete[] recordContent;
+	delete[] apiDataTemp;
 	return 0;
 }
 
@@ -127,19 +134,19 @@ RC RecordBasedFileManager::printRecord(const vector<Attribute> &recordDescriptor
     		if(recordDescriptor[i].type == TypeInt){
     			value = (int*)malloc(sizeof(int));
     			this->readInteger((byte*)data+offset, *(int*)value);
-    			cout << recordDescriptor[i].name << ": " << value;
+    			cout << recordDescriptor[i].name << ": " << *(int*)value <<" ";
     			offset+=sizeof(int);
 			}else if(recordDescriptor[i].type == TypeReal){
     			value = (float*)malloc(sizeof(float));
     			this->readFloat((byte*)data+offset, *(float*)value);
-				cout << recordDescriptor[i].name << ": " << value;
+				cout << recordDescriptor[i].name << ": " << *(float*)value <<" ";
 				offset+=sizeof(float);
 			}else{
 				value = (char*)malloc(recordDescriptor[i].length);
     			char *charData = new char[PAGE_SIZE];
 				int varcharLength = 0;
 				this->readVarchar((byte*)data+offset,varcharLength,charData);
-				cout << recordDescriptor[i].name << ": " << charData;
+				cout << recordDescriptor[i].name << ": " << (char*)charData <<" ";
 				delete[] charData;
 				offset+=sizeof(int);
 				offset+=varcharLength;
@@ -151,6 +158,15 @@ RC RecordBasedFileManager::printRecord(const vector<Attribute> &recordDescriptor
     cout<<endl;
     return 0;
 }
+
+RC RecordBasedFileManager::printRecordInStoreFormat(const vector<Attribute> &recordDescriptor, const void *recordData){
+	byte* apiData = new byte[PAGE_SIZE];
+	this->convertStoreFormat2APIData(recordDescriptor,recordData,apiData);
+	this->printRecord(recordDescriptor,apiData);
+	delete[] apiData;
+	return 0;
+}
+
 
 void RecordBasedFileManager::readDataContent(void* data, int startOffset, int endOffset, void* value){
 	memcpy(value, (byte*)data + startOffset, endOffset - startOffset);
@@ -175,6 +191,7 @@ void RecordBasedFileManager::readFloat(void* data, float& value){
 void RecordBasedFileManager::readVarchar(void* data, int offset, int& valueLength, char* value){
 	this->readInteger(data,offset,valueLength);
     memcpy((void*)value, (char*)data + offset + sizeof(int), valueLength);
+    value[valueLength] = '\0';
 }
 
 void RecordBasedFileManager::readVarchar(void* data, int& valueLength, char* value){
@@ -189,7 +206,7 @@ void RecordBasedFileManager::loadSlotItemInfos(const void *data, int slotIndex, 
 }
 
 void RecordBasedFileManager::insertSlotItemInfo(const void *pageData, byte startSlotIndex, byte occupiedSlotNum){
-    int currentSlotNum = -1;
+    byte currentSlotNum = -1;
     memcpy(&currentSlotNum, (byte*)pageData+PAGE_SIZE - sizeof(byte)*2, sizeof(byte));
 	int insertPosOffset = PAGE_SIZE - 2 * sizeof(byte) - (currentSlotNum + 1) * (2 * sizeof(byte));
 	memcpy((byte*)pageData + insertPosOffset, &startSlotIndex, sizeof(byte));
@@ -226,12 +243,12 @@ unsigned RecordBasedFileManager::calculateRecordLength(const vector<Attribute> &
     	if((*nullBits & nullIndicatorPointer) != 0){ // NULL
     		valueOffset+=0;
     	}else{  // not null
-    		void* value;
     		if(recordDescriptor[i].type == TypeInt){
     			valueOffset+=sizeof(int);
 			}else if(recordDescriptor[i].type == TypeReal){
     			valueOffset+=sizeof(float);
 			}else{
+	    		void* value;
 				value = (char*)malloc(recordDescriptor[i].length);
     			char *charData = new char[PAGE_SIZE];
 				int varcharLength = 0;
@@ -239,8 +256,8 @@ unsigned RecordBasedFileManager::calculateRecordLength(const vector<Attribute> &
 				delete[] charData;
 				valueOffset+=sizeof(int);
 				valueOffset+=varcharLength;
+				free(value);
 			}
-			free(value);
     	}
     	nullIndicatorPointer = nullIndicatorPointer>>1;
     }
@@ -294,10 +311,8 @@ void RecordBasedFileManager::convertAPIData2StoreFormat(const vector<Attribute> 
 				int varcharLength = 0;
 				this->readVarchar((byte*)APIData+apiDataOffset,varcharLength,charData);
 				delete[] charData;
-
 				apiDataOffset+=sizeof(int);
 				apiDataOffset+=varcharLength;
-
 				dataValueLength+=sizeof(int);
 				dataValueLength+=varcharLength;
 
@@ -330,7 +345,7 @@ void RecordBasedFileManager::convertStoreFormat2APIData(const vector<Attribute> 
 	apiDataOffset+=sizeof(byte)*nullIndicatorByteSize;
 
 	unsigned lastValueEndPositionOffset = recordDataOffset + 4*(desFieldNum-1);
-	unsigned lastValueEndPosition = *(unsigned*)((byte*)recordData+lastValueEndPositionOffset);
+	int lastValueEndPosition = *(int*)((byte*)recordData+lastValueEndPositionOffset);
 	recordDataOffset+=sizeof(byte)*4*desFieldNum;
 
 	memcpy((byte*)APIData+apiDataOffset, (byte*)recordData+recordDataOffset,lastValueEndPosition);
@@ -342,7 +357,7 @@ byte RecordBasedFileManager::locateInsertSlotLocation(FileHandle &fileHandle, by
 	byte firstAvailableSlotIndex = -1;
 	byte slotNum = -1;
 	PageNum currentPageIndex = 0;
-	while(currentPageIndex < totalNum - 1){
+	while(totalNum!=0 && currentPageIndex < (totalNum - 1)){
 		fileHandle.loadPageHeaderInfos(currentPageIndex,slotNum,firstAvailableSlotIndex);
 		if(firstAvailableSlotIndex < 0){
 			return -1;
