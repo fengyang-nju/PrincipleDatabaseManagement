@@ -377,7 +377,11 @@ byte RecordBasedFileManager::locateInsertSlotLocation(FileHandle &fileHandle, by
 	}
 
 	fileHandle.appendNewPage();
-	fileHandle.loadPageHeaderInfos(currentPageIndex,slotNum,firstAvailableSlotIndex);
+	RC rc = fileHandle.loadPageHeaderInfos(currentPageIndex,slotNum,firstAvailableSlotIndex);
+	if(rc<0){
+		return -1;
+	}
+
 	if(firstAvailableSlotIndex + occupiedSlotNum < MAX_OF_RECORD){
 		// assign RID with current pageNum and next slot Num
 		rid.pageNum = currentPageIndex;

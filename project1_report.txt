@@ -1,0 +1,25 @@
+1. Basic information
+Student ID : 32848715 
+Student Name : Yang Feng
+OS (bit) : Ubuntu64
+gcc version : 
+
+
+2. Internal Record Format
+- Show your record format design and describe how your design satisfies O(1) field access. If not, just mention that you haven't implemented this feature.
+- Describe how you store a VarChar field.
+
+number of fields in this record[1byte] + null-indicator[num_of_attribute/8] + offset_positions[num_of_attribute 4 * byte, offset value starts from the tail of offset_position, the offset_positions specify the end position of the field. If it is not clear enoughm, please refer the first figure of the 21st page of the ppt lecture 2] + [values]
+Attention: the offset_position starts from the 
+
+3. Page Format
+Record values[as the record format]+ free space + record directory[start slot position[1 byte] + record size in slot [1 byte], total 2 bytes] + NO. of records [1 byte] + next available slot index [1 byte, start from 0]
+
+
+4. Implementation Detail
+- Other implementation details goes here.
+
+
+5. Other (optional)
+- Freely use this section to tell us about things that are related to the project 1, but not related to the other sections (optional)
+

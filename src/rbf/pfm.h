@@ -53,6 +53,7 @@ public:
 
     /*add method*/
     bool exist	(const string &fileName);  //check the existence of the file
+    FILE* mFile;
 protected:
     PagedFileManager();                                   				// Constructor
     ~PagedFileManager();                                  				// Destructor
@@ -94,7 +95,7 @@ public:
 
 
 
-private:
+//private:
     /**
      * Move the operation pointer of the file to the beginning of the page specified by the page Index
      * @param pageIndex; starts from 0

@@ -27,12 +27,19 @@ PagedFileManager::~PagedFileManager()
 
 RC PagedFileManager::createFile(const string &fileName)
 {
-	const char* name = fileName.c_str();
-	if(exist(name)){
-		return -1;
-	}
-	fopen(name,"wb");
-    return 0;
+//	const char* name = fileName.c_str();
+//	if(exist(name)){
+//		return -1;
+//	}
+//	mFile = fopen(name,"wb");
+//    return 0;
+    const char *chFileName = fileName.c_str();
+    if(fopen(chFileName, "rb")){ // if file exists
+        return -1;
+    }else{
+        mFile = fopen(chFileName, "wb"); // create file
+        return 0;
+    }
 }
 
 
@@ -44,13 +51,25 @@ RC PagedFileManager::destroyFile(const string &fileName)
 
 RC PagedFileManager::openFile(const string &fileName, FileHandle &fileHandle)
 {
-	 const char *name = fileName.c_str();
-	 if(!exist(name)){
-		return -1;
-	 }
-	 FILE* pFile = fopen(name, "rb+");
-	 fileHandle.pFile = pFile;
-	 return 0;
+//	 const char *name = fileName.c_str();
+//	 if(!exist(name)){
+//		return -1;
+//	 }
+//	 mFile = fopen(name, "rb+");
+//	 if(!mFile){
+//		 return -1;
+//	 }
+//	 fileHandle.pFile = mFile;
+//	 return 0;
+
+    const char *chFileName = fileName.c_str();
+    mFile = fopen(chFileName, "rb+");
+    if(!mFile){
+        return -1;
+    }else{
+        fileHandle.pFile = mFile;
+        return 0;
+    }
 }
 
 
@@ -86,16 +105,25 @@ FileHandle::~FileHandle()
 
 RC FileHandle::readPage(PageNum pageNum, void *data)
 {
-    cout<<ftell(this->pFile)<<endl;
-    cout<<this->pFile<<endl;
+    //cout<<ftell(pFile)<<endl;
+    //cout<<this->pFile<<endl;
     if(this->moveFileOpPointer(pageNum)!=0){
         return -1;
     }
-    //fseek(this->pFile, pageNum * PAGE_SIZE, SEEK_SET);
-    cout<<ftell(this->pFile)<<endl;
 
-    if(fread(data, PAGE_SIZE, 1, this->pFile) != 1){
-    	cout<< ferror(this->pFile) <<endl;
+//    char* tmp = (char*)malloc(1);
+//    int res = fseek(pFile,-1,SEEK_END);
+//    fread(tmp,1,1,pFile);
+//    cout<<*tmp<<endl;
+//
+//    res = fseek(pFile,-2,SEEK_END);
+//    fread(tmp,1,1,pFile);
+//    cout<<*tmp<<endl;
+//
+//    cout<<res<<endl;
+    //cout<<ftell(this->pFile)<<endl;
+    cout<<ftell(pFile)<<endl;
+    if(fread(data, PAGE_SIZE, 1, pFile) != 1){
         return -1;
     }
 
@@ -126,7 +154,7 @@ RC FileHandle::appendPage(const void *data)
 	if(fwrite(data, PAGE_SIZE, 1, this->pFile)!=1){
 		return -1;
 	}
-	this->appendPageCounter++;
+	appendPageCounter++;
 	return 0;
 }
 
@@ -140,10 +168,10 @@ RC FileHandle::collectCounterValues(unsigned &readPageCount, unsigned &writePage
 
 unsigned FileHandle::getNumberOfPages()
 {
-    if((fseek(this->pFile, 0, SEEK_END)) != 0){
+    if((fseek(pFile, 0, SEEK_END)) != 0){
         return -1;
     }
-    return ftell(this->pFile) / PAGE_SIZE;
+    return ftell(pFile) / PAGE_SIZE;
 }
 
 RC FileHandle::moveFileOpPointer(unsigned pageIndex)
@@ -151,13 +179,11 @@ RC FileHandle::moveFileOpPointer(unsigned pageIndex)
     if(pageIndex >= this->getNumberOfPages()){
     	return -1;
     }
-    cout<<ftell(this->pFile)<<endl;
-    cout<<this->pFile<<endl;
-    if(fseek(this->pFile, pageIndex*PAGE_SIZE, SEEK_SET)!=0){
+
+    if(fseek(pFile, pageIndex*PAGE_SIZE, SEEK_SET)!=0){
     	return -1;
     }
 
-    cout<<ftell(this->pFile)<<endl;
     return 0;
 }
 
