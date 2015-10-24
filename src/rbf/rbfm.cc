@@ -351,23 +351,65 @@ void RecordBasedFileManager::convertStoreFormat2APIData(const vector<Attribute> 
 	memcpy((byte*)APIData+apiDataOffset, (byte*)recordData+recordDataOffset,lastValueEndPosition);
 }
 
-byte RecordBasedFileManager::locateInsertSlotLocation(FileHandle &fileHandle, byte occupiedSlotNum, RID &rid){
+byte RecordBasedFileManager::locateInsertSlotLocation(FileHandle &fileHandle,
+		byte occupiedSlotNum, RID &rid) {
 	PageNum totalNum = fileHandle.getNumberOfPages();
 
 	byte firstAvailableSlotIndex = -1;
 	byte slotNum = -1;
 	PageNum currentPageIndex = 0;
-	while(totalNum!=0 && currentPageIndex < (totalNum - 1)){
-		fileHandle.loadPageHeaderInfos(currentPageIndex,slotNum,firstAvailableSlotIndex);
-		if(firstAvailableSlotIndex < 0){
+	if (totalNum == 0) {
+		fileHandle.appendNewPage();
+		RC rc = fileHandle.loadPageHeaderInfos(currentPageIndex, slotNum,
+				firstAvailableSlotIndex);
+		if (rc < 0) {
 			return -1;
 		}
 
-		if(firstAvailableSlotIndex + occupiedSlotNum < MAX_OF_RECORD){
+		if (firstAvailableSlotIndex + occupiedSlotNum < MAX_OF_RECORD) {
 			// assign RID with current pageNum and next slot Num
 			rid.pageNum = currentPageIndex;
 			rid.slotNum = slotNum;
-			if(rid.slotNum < 0){
+			if (rid.slotNum < 0) {
+				return -1;
+			}
+
+			return firstAvailableSlotIndex;
+		}
+	}
+
+	//search from the tail
+	currentPageIndex = totalNum - 1;
+	RC rc = fileHandle.loadPageHeaderInfos(currentPageIndex, slotNum,
+			firstAvailableSlotIndex);
+	if (rc < 0) {
+		return -1;
+	}
+
+	if (firstAvailableSlotIndex + occupiedSlotNum < MAX_OF_RECORD) {
+		// assign RID with current pageNum and next slot Num
+		rid.pageNum = currentPageIndex;
+		rid.slotNum = slotNum;
+		if (rid.slotNum < 0) {
+			return -1;
+		}
+
+		return firstAvailableSlotIndex;
+	}
+
+	currentPageIndex = 0;
+	while (totalNum != 0 && currentPageIndex < (totalNum - 1)) {
+		fileHandle.loadPageHeaderInfos(currentPageIndex, slotNum,
+				firstAvailableSlotIndex);
+		if (firstAvailableSlotIndex < 0) {
+			return -1;
+		}
+
+		if (firstAvailableSlotIndex + occupiedSlotNum < MAX_OF_RECORD) {
+			// assign RID with current pageNum and next slot Num
+			rid.pageNum = currentPageIndex;
+			rid.slotNum = slotNum;
+			if (rid.slotNum < 0) {
 				return -1;
 			}
 
@@ -377,16 +419,18 @@ byte RecordBasedFileManager::locateInsertSlotLocation(FileHandle &fileHandle, by
 	}
 
 	fileHandle.appendNewPage();
-	RC rc = fileHandle.loadPageHeaderInfos(currentPageIndex,slotNum,firstAvailableSlotIndex);
-	if(rc<0){
+	currentPageIndex = fileHandle.getNumberOfPages() - 1;
+	rc = fileHandle.loadPageHeaderInfos(currentPageIndex, slotNum,
+			firstAvailableSlotIndex);
+	if (rc < 0) {
 		return -1;
 	}
 
-	if(firstAvailableSlotIndex + occupiedSlotNum < MAX_OF_RECORD){
+	if (firstAvailableSlotIndex + occupiedSlotNum < MAX_OF_RECORD) {
 		// assign RID with current pageNum and next slot Num
 		rid.pageNum = currentPageIndex;
 		rid.slotNum = slotNum;
-		if(rid.slotNum < 0){
+		if (rid.slotNum < 0) {
 			return -1;
 		}
 

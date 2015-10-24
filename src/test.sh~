@@ -18,5 +18,6 @@ make
 ./rbftest8b
 ./rbftest9
 ./rbftest10
-#./rbftest11
-#./rbftest12
+./rbftest11
+./rbftest12
+./rbftest_ex1

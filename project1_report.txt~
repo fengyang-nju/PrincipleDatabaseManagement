@@ -9,7 +9,7 @@ gcc version :
 - Show your record format design and describe how your design satisfies O(1) field access. If not, just mention that you haven't implemented this feature.
 - Describe how you store a VarChar field.
 
-number of fields in this record[1byte] + null-indicator[num_of_attribute/8] + offset_positions[num_of_attribute 4 * byte, offset value starts from the tail of offset_position, the offset_positions specify the end position of the field. If it is not clear enoughm, please cite the first figure of the 21st page of the ppt lecture 2] + [values]
+number of fields in this record[1byte] + null-indicator[num_of_attribute/8] + offset_positions[num_of_attribute 4 * byte, offset value starts from the tail of offset_position, the offset_positions specify the end position of the field. If it is not clear enoughm, please refer the first figure of the 21st page of the ppt lecture 2] + [values]
 Attention: the offset_position starts from the 
 
 3. Page Format

@@ -27,19 +27,12 @@ PagedFileManager::~PagedFileManager()
 
 RC PagedFileManager::createFile(const string &fileName)
 {
-//	const char* name = fileName.c_str();
-//	if(exist(name)){
-//		return -1;
-//	}
-//	mFile = fopen(name,"wb");
-//    return 0;
-    const char *chFileName = fileName.c_str();
-    if(fopen(chFileName, "rb")){ // if file exists
-        return -1;
-    }else{
-        mFile = fopen(chFileName, "wb"); // create file
-        return 0;
-    }
+	const char* name = fileName.c_str();
+	if(exist(name)){
+		return -1;
+	}
+	mFile = fopen(name,"wb");
+    return 0;
 }
 
 
@@ -51,25 +44,17 @@ RC PagedFileManager::destroyFile(const string &fileName)
 
 RC PagedFileManager::openFile(const string &fileName, FileHandle &fileHandle)
 {
-//	 const char *name = fileName.c_str();
-//	 if(!exist(name)){
-//		return -1;
-//	 }
-//	 mFile = fopen(name, "rb+");
-//	 if(!mFile){
-//		 return -1;
-//	 }
-//	 fileHandle.pFile = mFile;
-//	 return 0;
+	 const char *name = fileName.c_str();
+	 if(!exist(name)){
+		return -1;
+	 }
+	 mFile = fopen(name, "rb+");
+	 if(!mFile){
+		 return -1;
+	 }
+	 fileHandle.pFile = mFile;
+	 return 0;
 
-    const char *chFileName = fileName.c_str();
-    mFile = fopen(chFileName, "rb+");
-    if(!mFile){
-        return -1;
-    }else{
-        fileHandle.pFile = mFile;
-        return 0;
-    }
 }
 
 
@@ -105,24 +90,10 @@ FileHandle::~FileHandle()
 
 RC FileHandle::readPage(PageNum pageNum, void *data)
 {
-    //cout<<ftell(pFile)<<endl;
-    //cout<<this->pFile<<endl;
     if(this->moveFileOpPointer(pageNum)!=0){
         return -1;
     }
 
-//    char* tmp = (char*)malloc(1);
-//    int res = fseek(pFile,-1,SEEK_END);
-//    fread(tmp,1,1,pFile);
-//    cout<<*tmp<<endl;
-//
-//    res = fseek(pFile,-2,SEEK_END);
-//    fread(tmp,1,1,pFile);
-//    cout<<*tmp<<endl;
-//
-//    cout<<res<<endl;
-    //cout<<ftell(this->pFile)<<endl;
-    cout<<ftell(pFile)<<endl;
     if(fread(data, PAGE_SIZE, 1, pFile) != 1){
         return -1;
     }
@@ -180,7 +151,7 @@ RC FileHandle::moveFileOpPointer(unsigned pageIndex)
     	return -1;
     }
 
-    if(fseek(pFile, pageIndex*PAGE_SIZE, SEEK_SET)!=0){
+    if(fseeko(pFile, pageIndex*PAGE_SIZE, SEEK_SET)!=0){
     	return -1;
     }
 
@@ -193,6 +164,7 @@ RC FileHandle::loadPageHeaderInfos(PageNum pageNum, byte& recordNum, byte& nextA
 		return -1;
 	}
 	this->loadPageHeaderInfos(pageData,recordNum,nextAvailableSlotIndex);
+	free(pageData);
 	return 0;
 }
 
