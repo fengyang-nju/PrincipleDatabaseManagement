@@ -67,8 +67,34 @@ public:
   // Never keep the results in the memory. When getNextRecord() is called, 
   // a satisfying record needs to be fetched from the file.
   // "data" follows the same format as RecordBasedFileManager::insertRecord().
-  RC getNextRecord(RID &rid, void *data) { return RBFM_EOF; };
-  RC close() { return -1; };
+  RC getNextRecord(RID &rid, void *data);
+  bool hasNextRecord();
+  RC createNewScanIterator(FileHandle &fileHandle,
+	      const vector<Attribute> &recordDescriptor,
+	      const string &conditionAttribute,
+	      const CompOp compOp,                  // comparision type such as "<" and "="
+	      const void *value,                    // used in the comparison
+	      const vector<string> &attributeNames);
+  RC getNextProperRID(RID &rid);
+
+  bool dataComparator(AttrType dataType, void* leftOperator, const void* rightOperator, const CompOp compOp);
+  RC close();
+
+private :
+  bool getData(RID& rid, void* data);
+
+
+private:
+  FileHandle fileHandle;
+  vector<Attribute> recordDescriptor;
+  Attribute conditionAttribute;
+  CompOp compOp;
+  vector<string> attributeNames;
+  const void* value;
+  RID nextRID;
+  RID finalRID;
+  PageNum currentPageNum;
+  byte currentPageRecordNum;
 };
 
 
@@ -131,6 +157,8 @@ IMPORTANT, PLEASE READ: All methods below this comment (other than the construct
 
   /* My Methods*/
 public:
+  RC readRecordInStoredFormat(FileHandle &fileHandle, const vector<Attribute> &recordDescriptor, const RID &rid, void *data);  //read the data base on the offset position information
+
   void readDataContent(void* data, int startOffset, int endOffset, void* value);  //read the data base on the offset position information
   void loadSlotItemInfos(const void *data, int slotIndex, byte& startSlotIndex, byte& occupiedSlotNum); // load the slot item information from slot directory
   void insertSlotItemInfo(const void *pageData, byte startSlotIndex, byte occupiedSlotNum); // append the slot item information at the tail of page
@@ -138,7 +166,22 @@ public:
   unsigned calculateRecordLength(const vector<Attribute> &recordDescriptor, const void *data, DataType type);
   RC printRecordInStoreFormat(const vector<Attribute> &recordDescriptor, const void *recordData);
 
-private:
+  /* added in the 2nd project */
+  //startSlotIndex, the start slot index of the data
+  //
+  RC moveDataRight(const void* pageData, byte fromWhereSlotIndex, byte dataLength, byte toWhereSlotIndex);
+  RC moveDataLeft(const void* pageData, byte fromWhereSlotIndex, byte dataLength, byte toWhereSlotIndex);
+
+  RC getRealRIDFromIndex(RID &realRID, void* pageData, const RID &indexRID);
+  RC updateRIDList(const void* pageData, byte updateStartIndex, byte changeSize);
+
+  RC readAttributesFromRecord(void* recordDataInStoredFormat, const vector<Attribute> &recordDescriptor,
+			const vector<string> &attributeName, void *data);
+
+//  RC  RecordBasedFileManager::assembleRecordIntoAttributesData(void* recordData, void *data,
+//  		vector<Attribute> recordDescriptor, vector<string> attributeNames, DataType recordType);
+
+public:
   void readInteger(void* data, int offset, int& value);
   void readFloat(void* data, int offset, float& value);
   void readVarchar(void* data, int offset, int& valueLength, char* value);

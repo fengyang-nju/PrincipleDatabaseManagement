@@ -22,6 +22,7 @@ RC TEST_RM_4(const string &tableName, const int nameLength, const string &name, 
 	memset(nullsIndicator, 0, nullAttributesIndicatorActualSize);
     
     prepareTuple(attrs.size(), nullsIndicator, nameLength, name, age, height, salary, tuple, &tupleSize);
+    rm->printTuple(attrs,tuple);
     rc = rm->insertTuple(tableName, tuple, rid);
     assert(rc == success && "RelationManager::insertTuple() should not fail.");
 

@@ -9,13 +9,13 @@ RC TEST_RM_5(const string &tableName, const int nameLength, const string &name, 
     // 3. Read Tuple
 	// 4. Insert Tuple
     cout << endl << "***** In RM Test Case 5 *****" << endl;
-   
-    RID rid; 
+
+    RID rid;
     int tupleSize = 0;
     void *tuple = malloc(200);
     void *returnedData = malloc(200);
     void *returnedData1 = malloc(200);
-   
+
     // Test Insert Tuple
     vector<Attribute> attrs;
     RC rc = rm->getAttributes(tableName, attrs);
@@ -29,14 +29,15 @@ RC TEST_RM_5(const string &tableName, const int nameLength, const string &name, 
     rc = rm->insertTuple(tableName, tuple, rid);
     assert(rc == success && "RelationManager::insertTuple() should not fail.");
 
-    // Test Read Tuple 
+    // Test Read Tuple
     rc = rm->readTuple(tableName, rid, returnedData);
+    rm->printTuple(attrs,returnedData);
     assert(rc == success && "RelationManager::readTuple() should not fail.");
 
     // Test Delete Table
     rc = rm->deleteTable(tableName);
     assert(rc == success && "RelationManager::deleteTable() should not fail.");
-    
+
     // Reading a tuple on a deleted table
     memset((char*)returnedData1, 0, 200);
     rc = rm->readTuple(tableName, rid, returnedData1);
@@ -45,7 +46,7 @@ RC TEST_RM_5(const string &tableName, const int nameLength, const string &name, 
     // Inserting a tuple on a deleted table
     rc = rm->insertTuple(tableName, tuple, rid);
     assert(rc != success && "RelationManager::insertTuple() on a deleted table should fail.");
-    
+
     if(memcmp(returnedData, returnedData1, tupleSize) != 0)
     {
         cout << "***** Test Case 5 Finished. The result will be examined. *****" << endl << endl;

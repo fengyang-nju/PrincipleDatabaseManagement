@@ -10,9 +10,12 @@ RC TEST_RM_10(const string &tableName, vector<RID> &rids, vector<int> &sizes)
     int numTuples = 2000;
     void *tuple = malloc(2000);
     void *returnedData = malloc(2000);
-    
+
     readRIDsFromDisk(rids, numTuples);
     readSizesFromDisk(sizes, numTuples);
+
+    cout<<rids.size()<<endl;
+    cout<<sizes.size()<<endl;
 
     // GetAttributes
     vector<Attribute> attrs;
@@ -31,6 +34,7 @@ RC TEST_RM_10(const string &tableName, vector<RID> &rids, vector<int> &sizes)
         RID rid = rids[i];
 
         prepareLargeTuple(attrs.size(), nullsIndicator, i+10, tuple, &size);
+
         rc = rm->updateTuple(tableName, tuple, rid);
         assert(rc == success && "RelationManager::updateTuple() should not fail.");
 

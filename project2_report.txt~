@@ -1,37 +1,58 @@
 1. Basic information
-Team number (e.g., 01) : 
-#1 Student ID : 
-#1 Student Name : 
-#2 Student ID : 
-#2 Student Name : 
-OS (bit) :
-gcc version :
+Team number (e.g., 01) : 18
+#1 Student ID : 32848715
+#1 Student Name : Yang Feng
+#2 Student ID : 40089812
+#2 Student Name :  Yi Lin
+OS (bit) :Ubuntu14.04-64bit
+gcc version : 4.8.4
 
 
 2. Meta-data
-- Show your meta-data design (Tables and Columns table) and information about each column.
-
+Tables (table-id:int, table-name:varchar(50), file-name:varchar(50))
+Columns(table-id:int, column-name:varchar(50), column-type:int, column-length:int, column-position:int, delete-flag:int)
 
 3. Internal Record Format
-- Show your record format design and describe how your design satisfies O(1) field access. If not, just mention that your team hasn't implemented this feature.
-- Describe how you store a VarChar field.
-- Describe how you deal with an update and delete.
+Number of fields in this record[size of unsigned] + null-indicator[num_of_attribute/8] + offset_positions[num_of_attribute 4 * byte, offset value starts from the tail of offset_position, the offset_positions specify the end position of the field. If it is not clear enoughm, please refer the first figure of the 21st page of the ppt lecture 2] + [values]
 
+3.1 UPDATE OPERATION: 
+3.1.1 If the updated record size is larger than the old one, we will firstly check whether the available size of the current page is enough for the updated record or not. If it is not, the updated record will be insert into the file as an totally new record, and the returned rid will be process as following:
+a. delete the current record information.
+b. conduct the this operation: startSlotIndex |= 128, which could change the first bit of startSlotIndex into 1. In this way, we can convert the startSlotIndex into a number less than 0.
+c. save the return rid.pageNum(unsigned) into the startSlotIndex*SLOT_SIZE, and rid.slotNum(unsigned) into the startSlotIndex*SLOT_SIZE + sizeof(unsigned) 
+d. save the changed startSlotIndex back to the RIDList at the tail of page.
+
+3.1.2 If the updated record size is larger than the old one, we will firstly check whether the available size of the current page is enough for the updated record or not. If it is not, we just need to move the following record to the proper position and insert the updated data;
+
+3.1.3 If the updated record size is less than the old one, we just move the following record to the proper position, and insert the updated record data into the old position to override the old data.
+
+3.1.4 After one of the above operation, we will update the RID list and page header information at the tail of page:
+Update the slotItem information of rid.slotNum, of which, we just modify the occupiedSlotNumber.
+Update the page header information, modify the nextAvailableSlot Index;
+UPdate the  slotItems following rid.slotNum, of which, we need modify the startSlotIndex;  
+
+3.2 DELETE OPERATION:
+We just need to delete the content and move the following record into the proper position, and change the occupied length of the slotItem into 0;
 
 4. Page Format
-- Show your page format design.
-- Describe how you deal with an update and delete.
 
+Our page format is designed as following:
+Record values[as the record format]+ free space + record directory[start slot position[1 byte] + record size in slot [1 byte], total 2 bytes] + NO. of records [1 byte] + next available slot index [1 byte, start from 0]
 
 5. File Format
-- Show your file format design
 
-
+Our page format is designed as following:
+Record values[as the record format]+ free space + record directory[start slot position[1 byte] + record size in slot [1 byte], total 2 bytes] + NO. of records [1 byte] + next available slot index [1 byte, start from 0]
+In my program, the SLOT_SIZE is 32 bytes. So, the maximum number of records thta could be contained in one page should be 120. [4094 = (32 + 2) * 120 + 14]
 
 6. Implementation Detail
-- Other implementation details goes here.
-
+6.1 
+Because the difference of the internal format and API format, we defined an enumeration to clarify the two types {RECORD, API}.
+6.2 
+We also implemented two methods to conver the two types of data;
+6.3
+We implement two methods to extract the required attribute value from the two types of data;
 
 7. Other (optional)
-- Freely use this section to tell us about things that are related to the project 2, but not related to the other sections (optional)
+
 

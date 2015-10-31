@@ -184,7 +184,7 @@ RC FileHandle::appendNewPage(){
 	byte slotNum = 0;
 	memcpy((byte*)pageData + PAGE_SIZE - sizeof(byte), &nextAvailableSlotIndex, sizeof(byte));
 	memcpy((byte*)pageData + PAGE_SIZE - 2*sizeof(byte), &slotNum, sizeof(byte));
-	if(this->appendPage(pageData)<0);
+	if(this->appendPage(pageData)<0)
 		return -1;
 	delete[] pageData;
 	return 0;

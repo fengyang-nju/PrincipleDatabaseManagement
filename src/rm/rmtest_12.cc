@@ -21,8 +21,11 @@ RC TEST_RM_12(const string &tableName)
 
     int nullAttributesIndicatorActualSize = getActualByteForNullsIndicator(attrs.size());
 
+
+
     while(rmsi.getNextTuple(rid, returnedData) != RM_EOF)
     {
+
         if(j % 200 == 0)
         {
             int offset = 0;

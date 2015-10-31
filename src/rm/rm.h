@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <map>
 
 #include "../rbf/rbfm.h"
 
@@ -19,12 +20,14 @@ class Column{
 public:
 	int tableId;
 	string name;
-	int columnType;
+	AttrType columnType;
 	int length;
 	int position;
 	int deleteFLag;
+	RID rid;
 
-	Column(int tableId, const string& name, int columnType, int length, int position, int deleteFlag){
+	Column(){}
+	Column(int tableId, const char* name, AttrType columnType, int length, int position, int deleteFlag){
 		this->tableId = tableId;
 		this->name = name;
 		this->columnType = columnType;
@@ -32,6 +35,8 @@ public:
 		this->position = position;
 		this->deleteFLag = deleteFlag;
 	}
+
+	RC toAPIRecordFormat(void* data);
 };
 
 
@@ -40,16 +45,18 @@ public:
 	int id;
 	string name;
 	string filaname;
-	std::list<Column> column_list;
+	std::list<Column*> column_list;
+	RID rid;
 
 public:
-	MyTable(int id,const string &name, const string &filename){
+	MyTable(){};
+	MyTable(int id, const string& name, const string& filename){
 		this->id = id;
 		this->name = name;
 		this->filaname = filename;
 	}
 
-	void* toAPIRecordFormat();
+	RC toAPIRecordFormat(void* data);
 };
 
 
@@ -60,8 +67,17 @@ public:
   ~RM_ScanIterator() {};
 
   // "data" follows the same format as RelationManager::insertTuple()
-  RC getNextTuple(RID &rid, void *data) { return RM_EOF; };
-  RC close() { return -1; };
+  RC getNextTuple(RID &rid, void *data);
+  RC close();
+
+  /*  My Methods */
+  bool hasNextTuple();
+
+  RC createNewScanner(FileHandle fileHandler,vector<Attribute> attrs, const string &conditionAttribute, const CompOp compOp,
+			const void *value, const vector<string> &attributeNames);
+
+public:
+  RBFM_ScanIterator rbfm_scanner;
 };
 
 // Relation Manager
@@ -112,13 +128,30 @@ public:
 
   /************************************************My Methods******************************************************************/
 public:
-  RC importCatalog();
-  RC updateCatelogMetaData();
-  RC exportCatalog();
+//  RC importCatalog();
+//  RC updateCatelogMetaData();
+//  RC exportCatalog();
 
+  RC createSysTableFiles();
+
+  RC convertColumnIntoAttribute(Column* col, vector<Attribute> &attrs, bool showDeleted);
+
+  RC dataComparator();
+
+  RC importTableMapper();
+
+  void loadTableDescriptors(vector<Attribute>& tablesAttrs);
+  void loadColumnsDescriptors(vector<Attribute>& colsAttrs);
+
+
+
+
+//  RC exportTableMapper();
+
+  RC getAllAttributes(const string &tableName, vector<Attribute> &attrs);
   /************************************************My Attributes******************************************************************/
 public:
-  std::list<MyTable*> table_list;
+  std::map<string, MyTable*> table_mapper;
 
   RecordBasedFileManager* rbfm;
 
@@ -128,6 +161,9 @@ protected:
 
 private:
   static RelationManager *_rm;
+
+  void constructTableFromAPIData(MyTable* table, void* data);
+  void constructColumnFromAPIData(Column* column, void* data);
 };
 
 

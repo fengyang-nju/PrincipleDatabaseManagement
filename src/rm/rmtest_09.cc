@@ -10,7 +10,7 @@ RC TEST_RM_09(const string &tableName, vector<RID> &rids, vector<int> &sizes)
     int numTuples = 2000;
     void *tuple = malloc(2000);
     void *returnedData = malloc(2000);
-    
+
     // read the saved rids and the sizes of records
     readRIDsFromDisk(rids, numTuples);
     readSizesFromDisk(sizes, numTuples);
@@ -44,7 +44,7 @@ RC TEST_RM_09(const string &tableName, vector<RID> &rids, vector<int> &sizes)
     free(returnedData);
 
     cout << "***** Test Case 9 Finished. The result will be examined. *****" << endl << endl;
-    
+
     return success;
 }
 

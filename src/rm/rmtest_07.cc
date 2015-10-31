@@ -7,11 +7,11 @@ RC TEST_RM_7(const string &tableName)
 	// 2. Delete the given table
     cout << endl << "***** In RM Test Case 7 *****" << endl;
 
-    RID rid;    
+    RID rid;
     int numTuples = 100;
     void *returnedData = malloc(200);
 
-    set<int> ages; 
+    set<int> ages;
     RC rc = 0;
     for(int i = 0; i < numTuples; i++)
     {
@@ -27,7 +27,7 @@ RC TEST_RM_7(const string &tableName)
     rc = rm->scan(tableName, "", NO_OP, NULL, attributes, rmsi);
     assert(rc == success && "RelationManager::scan() should not fail.");
     int ageReturned = 0;
-    
+
     while(rmsi.getNextTuple(rid, returnedData) != RM_EOF)
     {
         // cout << "Returned Age: " << *(int *)((char *)returnedData+1) << endl;
@@ -41,7 +41,7 @@ RC TEST_RM_7(const string &tableName)
         }
     }
     rmsi.close();
-    
+
     // Delete a Table
     rc = rm->deleteTable(tableName);
     assert(rc == success && "RelationManager::deleteTable() should not fail.");

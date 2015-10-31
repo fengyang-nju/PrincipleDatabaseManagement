@@ -27,9 +27,12 @@ RC TEST_RM_11(const string &tableName, vector<RID> &rids)
 		assert(rc != success && "RelationManager::readTuple() on a deleted tuple should fail.");
     }
 
+    vector<Attribute> attrs;
+    rm->getAttributes("tbl_employee4",attrs);
     for(int i = 1000; i < 2000; i++)
     {
         rc = rm->readTuple(tableName, rids[i], returnedData);
+        //rm->printTuple(attrs,returnedData);
         assert(rc == success && "RelationManager::readTuple() should not fail.");
     }
     cout << "***** Test Case 11 Finished. The result will be examined. *****" << endl << endl;
