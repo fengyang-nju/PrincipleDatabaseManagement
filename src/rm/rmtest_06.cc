@@ -6,7 +6,7 @@ RC TEST_RM_6(const string &tableName)
     // 1. Simple scan **
     cout << endl << "***** In RM Test Case 6 *****" << endl;
 
-    RID rid;
+    RID rid;    
     int tupleSize = 0;
     int numTuples = 100;
     void *tuple;
@@ -22,7 +22,7 @@ RC TEST_RM_6(const string &tableName)
 	memset(nullsIndicator, 0, nullAttributesIndicatorActualSize);
 
     RID rids[numTuples];
-    set<int> ages;
+    set<int> ages; 
     for(int i = 0; i < numTuples; i++)
     {
         tuple = malloc(200);
@@ -45,11 +45,10 @@ RC TEST_RM_6(const string &tableName)
     attributes.push_back(attr);
     rc = rm->scan(tableName, "", NO_OP, NULL, attributes, rmsi);
     assert(rc == success && "RelationManager::scan() should not fail.");
-
+    
     nullAttributesIndicatorActualSize = getActualByteForNullsIndicator(attributes.size());
     while(rmsi.getNextTuple(rid, returnedData) != RM_EOF)
     {
-    	//cout<<*(int *)((char *)returnedData+nullAttributesIndicatorActualSize)<<endl;
         // cout << "Returned Age: " << *(int *)((char *)returnedData+nullAttributesIndicatorActualSize) << endl;
         if (ages.find(*(int *)((char *)returnedData+nullAttributesIndicatorActualSize)) == ages.end())
         {
