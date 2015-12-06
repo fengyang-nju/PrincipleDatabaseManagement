@@ -393,25 +393,31 @@ public:
 		if (compOp == NO_OP)
 			return true;
 		if (dataType == TypeVarChar) {
+			unsigned leftLength = *(unsigned*)(byte*)leftOperator;
 			char* left = (char*) ((byte*) leftOperator + sizeof(unsigned));
+			string leftString(left,leftLength);
+
+			unsigned rightLength = *(unsigned*)(byte*)rightOperator;
 			char* right = (char*) ((byte*) rightOperator + sizeof(unsigned));
+			string rightString(right,rightLength);
+
 			if (compOp == EQ_OP) {
-				return strcmp(left, right) == 0;
+				return strcmp(leftString.c_str(), rightString.c_str()) == 0;
 			}
 			if (compOp == LT_OP) {
-				return strcmp(left, right) < 0;
+				return strcmp(leftString.c_str(), rightString.c_str()) < 0;
 			}
 			if (compOp == GT_OP) {
-				return strcmp(left, right) > 0;
+				return strcmp(leftString.c_str(), rightString.c_str()) > 0;
 			}
 			if (compOp == LE_OP) {
-				return strcmp(left, right) <= 0;
+				return strcmp(leftString.c_str(), rightString.c_str())  <= 0;
 			}
 			if (compOp == GE_OP) {
-				return strcmp(left, right) >= 0;
+				return strcmp(leftString.c_str(), rightString.c_str())  >= 0;
 			}
 			if (compOp == NE_OP) {
-				return strcmp(left, right) != 0;
+				return strcmp(leftString.c_str(), rightString.c_str())  != 0;
 			}
 			return true;
 		} else if (dataType == TypeInt) {

@@ -51,7 +51,6 @@ RC Filter::getNextTuple(void *data) {
 			//for debug
 			if (compare(tmp)) {
 				unsigned length = this->getDataLength(tmp, this->attrs);
-
 				memcpy(data, tmp, length);
 				delete[] tmp;
 				return 0;

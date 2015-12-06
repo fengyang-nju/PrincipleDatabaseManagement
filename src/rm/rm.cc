@@ -742,7 +742,7 @@ RC RelationManager::insertIndexesWithTuple(const string &tableName, const void *
 			byte* keyValue = new byte[PAGE_SIZE];
 			this->rbfm->readAttributesFromAPIRecord(tupleData, tableDescriptor, attrsName, keyValue);
 			IXFileHandle ixfileHandle;
-			cout<<"filename = "<<(*it)->index->filename<<endl;
+			//cout<<"filename = "<<(*it)->index->filename<<endl;
 			if (this->rbfm->openFile((*it)->index->filename, ixfileHandle) != 0){
 				cout<<"open file failed! filename = "<<(*it)->index->filename<<endl;
 						return -1;
