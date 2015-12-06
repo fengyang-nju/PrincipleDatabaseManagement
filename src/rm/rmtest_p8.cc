@@ -27,6 +27,7 @@ RC TEST_RM_PRIVATE_8(const string &tableName)
 
     for(int i = 0; i < numTuples; i++)
     {
+    	cout<< i <<endl;
         rc = rm->deleteTuple(tableName, rids[i]);
         if(rc != success) {
             free(returnedData);

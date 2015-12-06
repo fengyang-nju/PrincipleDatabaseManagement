@@ -1,26 +1,5 @@
 #!/bin/bash - 
 
-unzip $1.zip
-if [ $? -ne 0 ]; then
-    echo "[ERROR] ZIP File Error. Please fix it!"
-    echo
-    exit 1
-fi
-
-cd $1
-if [ $? -ne 0 ]; then
-    echo "[ERROR] The directory structure is not correct. Please fix it!"
-    echo
-    exit 1
-fi
-
-cd codebase
-if [ $? -ne 0 ]; then
-    echo "[ERROR] The directory structure is not correct. Please fix it!"
-    echo
-    exit 1
-fi
-
 cd rbf
 if [ $? -ne 0 ]; then
     echo "[ERROR] The directory structure is not correct. Please fix it!"
@@ -58,4 +37,12 @@ make
 ./ixtest_15
 ./ixtest_extra_01
 ./ixtest_extra_02
+#./ixtest_p1
+#./ixtest_p2
+#./ixtest_p3
+#./ixtest_p4
+#./ixtest_p5
+#./ixtest_p6
+#./ixtest_pe_01
+#./ixtest_pe_02
 

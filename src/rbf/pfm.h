@@ -53,7 +53,6 @@ public:
 
     /*add method*/
     bool exist	(const string &fileName);  //check the existence of the file
-    FILE* mFile;
 protected:
     PagedFileManager();                                   				// Constructor
     ~PagedFileManager();                                  				// Destructor
@@ -90,7 +89,7 @@ public:
      * */
     RC appendNewPage();
     RC loadPageHeaderInfos(PageNum pageNum, byte& recordNum, byte& nextAvailableSlotIndex);  // load the pageHeader information into data
-    void loadPageHeaderInfos(const void *pageData, byte& recordNum, byte& nextAvailableSlotIndex);  // override
+    RC loadPageHeaderInfos(const void *pageData, byte& recordNum, byte& nextAvailableSlotIndex);  // override
     void updatePageHeaderInfos(const void *pageData, byte slotNum, byte nextAvailableSlotIndex);  // update the page header information of the last two bytes of the page data
 
 

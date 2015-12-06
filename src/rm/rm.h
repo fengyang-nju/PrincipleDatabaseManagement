@@ -8,13 +8,34 @@
 #include <map>
 
 #include "../rbf/rbfm.h"
+#include "../ix/ix.h"
 
 #define CATELOG_FILE_NAME "Tables"
 #define ATTR_FILE_NAME "Columns"
+#define INDEX_FILE_NAME "Indexes"
 
 using namespace std;
 
 # define RM_EOF (-1)  // end of a scan operator
+
+class MyIndex{
+public:
+	int tableId;
+	string tablename;
+	string attrname;
+	string filename;
+	RID rid;
+
+	MyIndex(int tableId, const char* tablename, const char* attrname, const char* filename){
+		this->tableId = tableId;
+		this->tablename = tablename;
+		this->attrname = attrname;
+		this->filename = filename;
+	};
+
+	RC toAPIRecordFormat(void* data);
+};
+
 
 class Column{
 public:
@@ -26,7 +47,12 @@ public:
 	int deleteFLag;
 	RID rid;
 
-	Column(){}
+	MyIndex* index;
+
+	Column(){
+		index = NULL;
+	};
+
 	Column(int tableId, const char* name, AttrType columnType, int length, int position, int deleteFlag){
 		this->tableId = tableId;
 		this->name = name;
@@ -34,6 +60,7 @@ public:
 		this->length = length;
 		this->position = position;
 		this->deleteFLag = deleteFlag;
+		index = NULL;
 	}
 
 	RC toAPIRecordFormat(void* data);
@@ -44,8 +71,9 @@ class MyTable{
 public:
 	int id;
 	string name;
-	string filaname;
+	string filename;
 	std::list<Column*> column_list;
+	//std::list<MyIndex*> index_list;
 	RID rid;
 
 public:
@@ -53,10 +81,19 @@ public:
 	MyTable(int id, const string& name, const string& filename){
 		this->id = id;
 		this->name = name;
-		this->filaname = filename;
+		this->filename = filename;
 	}
 
 	RC toAPIRecordFormat(void* data);
+
+	Column* findAttributeByName(const string& name){
+		for (std::list<Column*>::iterator it = column_list.begin(); it != column_list.end(); it++){
+			if(strcmp((*it)->name.c_str(),name.c_str())==0){
+				return *it;
+			}
+		}
+		return NULL;
+	}
 };
 
 
@@ -78,6 +115,24 @@ public:
 
 public:
   RBFM_ScanIterator rbfm_scanner;
+};
+
+// RM_IndexScanIterator is an iterator to go through index entries
+class RM_IndexScanIterator {
+ public:
+  RM_IndexScanIterator() {};  	// Constructor
+  ~RM_IndexScanIterator() {}; 	// Destructor
+
+  // "key" follows the same format as in IndexManager::insertEntry()
+  RC getNextEntry(RID &rid, void *key);  	// Get next matching entry
+  RC close();             			// Terminate index scan
+
+ public:
+
+  void initialize(IXFileHandle &ixfileHandle, unsigned lowLeafPage, unsigned highLeafPage,
+          		unsigned lowKeyIndex, unsigned highKeyIndex, const Attribute& attr);
+
+  IX_ScanIterator ix_scanner;
 };
 
 // Relation Manager
@@ -119,6 +174,21 @@ public:
       const vector<string> &attributeNames, // a list of projected attributes
       RM_ScanIterator &rm_ScanIterator);
 
+  RC createIndex(const string &tableName, const string &attributeName);
+
+  RC destroyIndex(const string &tableName, const string &attributeName);
+
+  // indexScan returns an iterator to allow the caller to go through qualified entries in index
+  RC indexScan(const string &tableName,
+                         const string &attributeName,
+                         const void *lowKey,
+                         const void *highKey,
+                         bool lowKeyInclusive,
+                         bool highKeyInclusive,
+                         RM_IndexScanIterator &rm_IndexScanIterator);
+
+  RC initializeIndexFile(MyTable* table, Column* col);
+
 // Extra credit work (10 points)
 public:
   RC addAttribute(const string &tableName, const Attribute &attr);
@@ -142,18 +212,20 @@ public:
 
   void loadTableDescriptors(vector<Attribute>& tablesAttrs);
   void loadColumnsDescriptors(vector<Attribute>& colsAttrs);
-
-
-
-
-//  RC exportTableMapper();
+  void loadIndexesDescriptors(vector<Attribute>& colsAttrs);
 
   RC getAllAttributes(const string &tableName, vector<Attribute> &attrs);
+
+  RC insertIndexesWithTuple(const string &tableName, const void *tupleData, RID &rid);
+
+  RC deleteIndexesWithTuple(const string &tableName, const vector<Attribute> &attrs, const RID &rid);
+
   /************************************************My Attributes******************************************************************/
 public:
   std::map<string, MyTable*> table_mapper;
 
   RecordBasedFileManager* rbfm;
+  IndexManager* ixm;
 
 protected:
   RelationManager();

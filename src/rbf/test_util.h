@@ -2,10 +2,10 @@
 #include <string>
 #include <cassert>
 #include <sys/stat.h>
-#include <stdlib.h> 
+#include <stdlib.h>
 #include <string.h>
 #include <stdexcept>
-#include <stdio.h> 
+#include <stdio.h>
 #include <math.h>
 
 #include "pfm.h"
@@ -34,7 +34,7 @@ int getActualByteForNullsIndicator(int fieldCount) {
 
 
 // After createFile() check
-int createFileShouldSucceed(string &fileName) 
+int createFileShouldSucceed(string &fileName)
 {
     if(FileExists(fileName))
     {
@@ -50,7 +50,7 @@ int createFileShouldSucceed(string &fileName)
 }
 
 // After destroyFile() check
-int destroyFileShouldSucceed(string &fileName) 
+int destroyFileShouldSucceed(string &fileName)
 {
     if(FileExists(fileName))
     {
@@ -64,7 +64,7 @@ int destroyFileShouldSucceed(string &fileName)
         return 0;
     }
 }
-    
+
 // Function to prepare the data in the correct form to be inserted/read
 void prepareRecord(int fieldCount, unsigned char *nullFieldsIndicator, const int nameLength, const string &name, const int age, const float height, const int salary, void *buffer, int *recordSize)
 {
@@ -78,7 +78,7 @@ void prepareRecord(int fieldCount, unsigned char *nullFieldsIndicator, const int
     memcpy((char *)buffer + offset, nullFieldsIndicator, nullFieldsIndicatorActualSize);
 	offset += nullFieldsIndicatorActualSize;
 
-	// Beginning of the actual data    
+	// Beginning of the actual data
 	// Note that the left-most bit represents the first field. Thus, the offset is 7 from right, not 0.
 	// e.g., if a record consists of four fields and they are all nulls, then the bit representation will be: [11110000]
 

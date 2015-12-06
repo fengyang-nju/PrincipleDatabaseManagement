@@ -1,0 +1,42 @@
+1. Basic information
+Student ID : 32848715 
+Student Name : Yang Feng
+OS (bit) : Ubuntu64
+gcc version : 4.8.4
+
+
+2. Internal Record Format
+
+The record format is designed as following:
+
+number of fields in this record[size of unsigned] + null-indicator[num_of_attribute/8] + offset_positions[num_of_attribute 4 * byte, offset value starts from the tail of offset_position, the offset_positions specify the end position of the field. If it is not clear enoughm, please refer the first figure of the 21st page of the ppt lecture 2] + [values]
+
+Attention: the offset_position starts from the tail of the offset_position space, and the value should be the offset of END position of the field.
+
+I store the VarChar field as the format that learnt from the class: length_of_charSequence [integer, 4 bytes] + charSequence
+
+3. Page Format
+
+Our page format is designed as following:
+
+Record values[as the record format]+ free space + record directory[start slot position[1 byte] + record size in slot [1 byte], total 2 bytes] + NO. of records [1 byte] + next available slot index [1 byte, start from 0]
+
+In my program, the SLOT_SIZE is 32 bytes. So, the maximum number of records thta could be contained in one page should be 120. [4094 = (32 + 2) * 120 + 14]
+
+4. Implementation Detail
+
+Due to the difference of record format and the api data format, I implemented two public methods to convert the data format, the headers of two methods are as following:
+  void convertAPIData2StoreFormat(const vector<Attribute> &recordDescriptor, const void *APIData, void* recordData);
+  void convertStoreFormat2APIData(const vector<Attribute> &recordDescriptor, const void *recordData, void* APIData);
+
+Furthremore, in order to print the record data, I implemented a method to finish this task:
+  RC printRecordInStoreFormat(const vector<Attribute> &recordDescriptor, const void *recordData);
+
+And in order to calculate the length of the two types of data, a utility method is implemented:
+  unsigned calculateRecordLength(const vector<Attribute> &recordDescriptor, const void *data, DataType type);
+
+Attention: the DataType should be the RECORD or API.
+
+5. Other (optional)
+- Freely use this section to tell us about things that are related to the project 1, but not related to the other sections (optional)
+

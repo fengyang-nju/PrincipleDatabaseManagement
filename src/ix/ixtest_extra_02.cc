@@ -30,7 +30,7 @@ int testCase_extra_2(const string &indexFileName,
     // 5. Delete the "unsafe one" 
     // 6. CloseIndex
     // 7. DestroyIndex
-	cerr << endl << "***** In IX Test Case 2 *****" << endl;
+	cerr << endl << "***** In IX Extra Test Case 2 *****" << endl;
 
     RID rid;
     IXFileHandle ixfileHandle;

@@ -35,7 +35,7 @@ int testCase_12(const string &indexFileName, const Attribute &attribute)
     IXFileHandle ixfileHandle;
     IX_ScanIterator ix_ScanIterator;
     float compVal = 100.0;
-    unsigned numOfTuples = 500;
+    unsigned numOfTuples = 200;
     float key;
 
     // create index file

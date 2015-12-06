@@ -1,0 +1,78 @@
+1. Basic information
+Team number: 18
+#1 Student ID : 32848715
+#1 Student Name : Yang Feng
+#2 Student ID : 40089812
+#2 Student Name :  Yi Lin
+OS (bit) :Ubuntu14.04-64bit
+gcc version : 4.8.4
+
+2. Meta-data page in an index file
+Nothing to report.
+
+3. Index Entry Format
+
+Firstly, we define the PageNum which didnt get a value in the program into UNDEFINED_PAGE_INDEX.
+
+# define UNDEFINED_PAGE_INDEX UINT_MAX
+
+/* Page Type*/
+enum PAGE_TYPE{INDEX=0, LEAF, DATA, APPEND, EMPTY};
+
+/* Header Section */
+class IXPageHeader{
+	PAGE_TYPE pageType; //page type
+	unsigned recordCount; // recordCount, in the index page, it is the number of index
+	unsigned freeSpace;  
+	PageNum parentPageIndex;
+	PageNum leftSiblingPageIndex;
+	PageNum rightSiblingPageIndex;
+}
+
+/* Page formats*/
+As declared in the PAGE_TYPE enumeration, we defined five types of pages:
+If the corresponding sibling is NULL, we just need to set it into UINT_MAX, which we treat as a special value;
+
+INDEX:
+Contains the index information, format:
+HEADER-SECTION + firstChildIndex[PAGE_NUM, 4bytes] + [ key, ChildIndex[PAGE_NUM, 4bytes]];
+
+LEAF:
+Contains the leaf information, we use the key-ridlist format;
+HEADER-SECTION + { key + rid [ 2 * 4 bytes] };
+
+DATA:
+Contains the ridList, format; The number of rids that could be stored in one page should be (4096 - 24)/8 = 509
+HEADER-SECTION{parent: the key page, rightSiblingPage: the appendPageIndex} + { rid [ 2 * 4 bytes] };
+
+APPEND:
+Contains the ridList, format;
+HEADER-SECTION{parent: the parent DATA PageIndex or the previous APPEND PageIndex, rightSibling: the next APPEND PageIndex} + { rid [ 2 * 4 bytes] };
+
+
+ATTENTION, in my design, I maintain the page 0 as the root page.
+
+4. Page Format
+
+As described in the section 3, the "INDEX" page should be in this format:
+HEADER-SECTION + firstChildIndex[PAGE_NUM, 4bytes] + [ key, ChildIndex[PAGE_NUM, 4bytes]];
+
+The "LEAF" section should be in the following format:
+HEADER-SECTION + { key + rid [ 2 * 4 bytes] };
+
+5. Implementation Detail
+- Have you added your own source file (.cc or .h)?
+NO.
+
+- Have you implemented non-lazy deletion? Choose Yes or No: 
+Yes.
+
+- Have you implemented duplicated key handling that can span multiple pages? Choose Yes or No: 
+  If yes, please explain briefly how you have implemented this feature.
+Yes. In the leaf page, I just design the items into the  {key + rid [ 2 * 4 bytes]} pair format. If the key has more than one RID, we set the rid.pageNo in <key,rid> pair into UNDEFINED_PAGE_NUM as flag, and I will move the ridList into the DATA page, the page number of which is stored in rid.slotNum. If the size of ridList is more than one DATA page, we will use some APPEND page to store the additional rids. You can refer the page format in the 3rd section of this report.
+
+- Other implementation details:
+NOthing to report;
+
+6. Other (optional)
+Because I am not an expert of C++, I made a mistake in deleting the dynamic allocated memory. There are some memeory leak problems in this project. I will try to fix this problem in Project4.

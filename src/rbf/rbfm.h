@@ -163,7 +163,7 @@ public:
   void loadSlotItemInfos(const void *data, int slotIndex, byte& startSlotIndex, byte& occupiedSlotNum); // load the slot item information from slot directory
   void insertSlotItemInfo(const void *pageData, byte startSlotIndex, byte occupiedSlotNum); // append the slot item information at the tail of page
 
-  unsigned calculateRecordLength(const vector<Attribute> &recordDescriptor, const void *data, DataType type);
+  static unsigned calculateRecordLength(const vector<Attribute> &recordDescriptor, const void *data, DataType type);
   RC printRecordInStoreFormat(const vector<Attribute> &recordDescriptor, const void *recordData);
 
   /* added in the 2nd project */
@@ -175,22 +175,25 @@ public:
   RC getRealRIDFromIndex(RID &realRID, void* pageData, const RID &indexRID);
   RC updateRIDList(const void* pageData, byte updateStartIndex, byte changeSize);
 
-  RC readAttributesFromRecord(void* recordDataInStoredFormat, const vector<Attribute> &recordDescriptor,
+  RC readAttributesFromStoredRecord(const void* recordDataInStoredFormat, const vector<Attribute> &recordDescriptor,
 			const vector<string> &attributeName, void *data);
+
+  RC readAttributesFromAPIRecord(const void* recordDataInAPIFormat, const vector<Attribute> &recordDescriptor,
+  			const vector<string> &attributeName, void *data);
 
 //  RC  RecordBasedFileManager::assembleRecordIntoAttributesData(void* recordData, void *data,
 //  		vector<Attribute> recordDescriptor, vector<string> attributeNames, DataType recordType);
 
 public:
-  void readInteger(void* data, int offset, int& value);
-  void readFloat(void* data, int offset, float& value);
-  void readVarchar(void* data, int offset, int& valueLength, char* value);
-  void readInteger(void* data, int& value); //override
-  void readFloat(void* data, float& value); //override
-  void readVarchar(void* data, int& valueLength, char* value); //override
+  static void readInteger(void* data, int offset, int& value);
+  static void readFloat(void* data, int offset, float& value);
+  static void readVarchar(void* data, int offset, int& valueLength, char* value);
+  static void readInteger(void* data, int& value); //override
+  static void readFloat(void* data, float& value); //override
+  static void readVarchar(void* data, int& valueLength, char* value); //override
 
-  void convertAPIData2StoreFormat(const vector<Attribute> &recordDescriptor, const void *APIData, void* recordData);
-  void convertStoreFormat2APIData(const vector<Attribute> &recordDescriptor, const void *recordData, void* APIData);
+  static void convertAPIData2StoreFormat(const vector<Attribute> &recordDescriptor, const void *APIData, void* recordData);
+  static void convertStoreFormat2APIData(const vector<Attribute> &recordDescriptor, const void *recordData, void* APIData);
 
   byte locateInsertSlotLocation(FileHandle &fileHandle, byte occupiedSlotNum, RID &rid);
 

@@ -31,7 +31,7 @@ RC PagedFileManager::createFile(const string &fileName)
 	if(exist(name)){
 		return -1;
 	}
-	mFile = fopen(name,"wb");
+	fopen(name,"wb");
     return 0;
 }
 
@@ -48,7 +48,7 @@ RC PagedFileManager::openFile(const string &fileName, FileHandle &fileHandle)
 	 if(!exist(name)){
 		return -1;
 	 }
-	 mFile = fopen(name, "rb+");
+	 FILE* mFile = fopen(name, "rb+");
 	 if(!mFile){
 		 return -1;
 	 }
@@ -82,14 +82,17 @@ FileHandle::FileHandle()
 
 FileHandle::~FileHandle()
 {
-    if(this->pFile){
-        this->pFile = NULL;
+    if(this->pFile != NULL){
+        pFile = NULL;
     }
 }
 
 
 RC FileHandle::readPage(PageNum pageNum, void *data)
 {
+	if(this->pFile == NULL)
+		return -1;
+
     if(this->moveFileOpPointer(pageNum)!=0){
         return -1;
     }
@@ -168,7 +171,7 @@ RC FileHandle::loadPageHeaderInfos(PageNum pageNum, byte& recordNum, byte& nextA
 	return 0;
 }
 
-void FileHandle::loadPageHeaderInfos(const void *pageData, byte& recordNum, byte& nextAvailableSlotIndex){
+RC FileHandle::loadPageHeaderInfos(const void *pageData, byte& recordNum, byte& nextAvailableSlotIndex){
 	memcpy(&nextAvailableSlotIndex,(byte*)pageData + PAGE_SIZE - sizeof(byte),  sizeof(byte));
 	memcpy(&recordNum, (byte*)pageData + PAGE_SIZE - 2*sizeof(byte), sizeof(byte));
 }

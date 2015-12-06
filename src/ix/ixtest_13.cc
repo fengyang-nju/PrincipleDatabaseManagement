@@ -29,7 +29,7 @@ int testCase_13(const string &indexFileName, const Attribute &attribute)
     IXFileHandle ixfileHandle;
     IX_ScanIterator ix_ScanIterator;
     unsigned offset;
-    unsigned numOfTuples = 5000;
+    unsigned numOfTuples = 1000;
     char key[100];
     unsigned count;
 

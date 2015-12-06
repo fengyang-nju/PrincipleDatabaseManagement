@@ -61,26 +61,36 @@ RC RBFM_ScanIterator::createNewScanIterator(FileHandle &fileHandle,
 	this->nextRID.pageNum = 0;
 	this->nextRID.slotNum = 0; //initialization
 
-	PageNum finalPageNum = this->fileHandle.getNumberOfPages() - 1;
-	void* finalPageData = (byte*) malloc(PAGE_SIZE);
-	this->fileHandle.readPage(finalPageNum, finalPageData);
+	if(this->fileHandle.getNumberOfPages() > 0){
+		PageNum finalPageNum = this->fileHandle.getNumberOfPages() - 1;
+		void* finalPageData = (byte*) malloc(PAGE_SIZE);
+		this->fileHandle.readPage(finalPageNum, finalPageData);
 
-	byte recordNum, nextAvailableSlotIndex;
-	this->fileHandle.loadPageHeaderInfos(finalPageData, recordNum,
-			nextAvailableSlotIndex);
-	this->finalRID.pageNum = finalPageNum;
-	this->finalRID.slotNum = recordNum - 1;
+		byte recordNum, nextAvailableSlotIndex;
+		this->fileHandle.loadPageHeaderInfos(finalPageData, recordNum,
+				nextAvailableSlotIndex);
+		this->finalRID.pageNum = finalPageNum;
 
-	this->currentPageNum = 0;
-	void* firstPageData = (byte*) malloc(PAGE_SIZE);
-	this->fileHandle.readPage(this->currentPageNum, firstPageData);
-	this->fileHandle.loadPageHeaderInfos(firstPageData, recordNum,
-			nextAvailableSlotIndex);
-	this->currentPageRecordNum = recordNum;
 
-	free(firstPageData);
-	free(finalPageData);
+		this->finalRID.slotNum = recordNum - 1;
+
+		this->currentPageNum = 0;
+		void* firstPageData = (byte*) malloc(PAGE_SIZE);
+		this->fileHandle.readPage(this->currentPageNum, firstPageData);
+		this->fileHandle.loadPageHeaderInfos(firstPageData, recordNum,
+					nextAvailableSlotIndex);
+		this->currentPageRecordNum = recordNum;
+		free(firstPageData);
+		free(finalPageData);
+	}else{
+		PageNum finalPageNum = 0;
+		this->finalRID.pageNum = finalPageNum;
+		this->finalRID.slotNum = 0;
+		this->currentPageNum = 0;
+		this->currentPageRecordNum = 0;
+	}
 	return 0;
+
 }
 
 bool RBFM_ScanIterator::getData(RID& rid, void* data) {
@@ -94,7 +104,7 @@ bool RBFM_ScanIterator::getData(RID& rid, void* data) {
 //	RecordBasedFileManager::instance()->printRecordInStoreFormat(
 //			recordDescriptor, dataContent);
 
-	RecordBasedFileManager::instance()->readAttributesFromRecord(dataContent,
+	RecordBasedFileManager::instance()->readAttributesFromStoredRecord(dataContent,
 			recordDescriptor, this->attributeNames, data);
 	free(dataContent);
 	return 0;
@@ -125,8 +135,10 @@ RC RBFM_ScanIterator::getNextRecord(RID &rid, void *data) {
 						(byte*)leftValue+1, this->value, this->compOp)) {
 					rid.pageNum = this->nextRID.pageNum;
 					rid.slotNum = this->nextRID.slotNum;
+
 					//for debug
 					//cout<< "rid.pageNum  = "<<rid.pageNum  << " rid.slotNum = "<<rid.slotNum<<endl;
+
 					this->getNextProperRID(this->nextRID);
 					free(leftValue);
 					if(this->getData(rid, data)==0){
@@ -154,8 +166,8 @@ bool RBFM_ScanIterator::dataComparator(AttrType dataType, void* leftOperator,
 	if (compOp == NO_OP)
 		return true;
 	if (dataType == TypeVarChar) {
-		char* left = (char*) leftOperator;
-		char* right = (char*) rightOperator;
+		char* left = (char*) ((byte*)leftOperator+sizeof(unsigned));
+		char* right = (char*) ((byte*)rightOperator+sizeof(unsigned));
 		if (compOp == EQ_OP) {
 			return strcmp(left, right) == 0;
 		}
@@ -263,6 +275,9 @@ bool RBFM_ScanIterator::hasNextRecord() {
 //	if(this->finalRID.slotNum == this->nextRID.slotNum){
 //		cout<<"==================="<<endl;
 //	}
+	if(this->finalRID.pageNum==0 && this->finalRID.pageNum ==0 && this->finalRID.slotNum==0)
+		return false;
+
 	if (this->finalRID.pageNum > this->nextRID.pageNum)
 		return true;
 	else if (this->finalRID.pageNum == this->nextRID.pageNum
@@ -272,9 +287,18 @@ bool RBFM_ScanIterator::hasNextRecord() {
 	return false;
 }
 
+RC RecordBasedFileManager::readAttributesFromAPIRecord(const void* recordDataInAPIFormat, const vector<Attribute> &recordDescriptor,
+			const vector<string> &attributeName, void *data){
+	byte* recordDataInStoreFormat = new byte[PAGE_SIZE];
+	this->convertAPIData2StoreFormat(recordDescriptor,recordDataInAPIFormat,recordDataInStoreFormat);
+	this->readAttributesFromStoredRecord(recordDataInStoreFormat, recordDescriptor, attributeName, data);
+	delete[] recordDataInStoreFormat;
+	return 0;
+}
+
 //the vector<Attribute> recordDescriptor should be all attributes;
-RC RecordBasedFileManager::readAttributesFromRecord(
-		void* recordDataInStoredFormat,
+RC RecordBasedFileManager::readAttributesFromStoredRecord(
+		const void* recordDataInStoredFormat,
 		const vector<Attribute> &recordDescriptor,
 		const vector<string> &attributeName, void *data) {
 
@@ -343,8 +367,7 @@ RC RecordBasedFileManager::readAttributesFromRecord(
 		standardNullIndicator = standardNullIndicator >> 1;
 	}
 	memcpy((byte*) data + nullIndicatorOffset, &nullIndicator, sizeof(byte));
-
-	//this->printRecord(recordDescriptor,data);
+	return 0;
 }
 
 //the record descriptor contains the full attribute list, including the deleted ones.
@@ -944,7 +967,7 @@ void RecordBasedFileManager::readInteger(void* data, int offset, int& value) {
 }
 
 void RecordBasedFileManager::readInteger(void* data, int& value) {
-	this->readInteger(data, 0, value);
+	readInteger(data, 0, value);
 }
 
 void RecordBasedFileManager::readFloat(void* data, int offset, float& value) {
@@ -952,19 +975,19 @@ void RecordBasedFileManager::readFloat(void* data, int offset, float& value) {
 }
 
 void RecordBasedFileManager::readFloat(void* data, float& value) {
-	this->readFloat(data, 0, value);
+	readFloat(data, 0, value);
 }
 
 void RecordBasedFileManager::readVarchar(void* data, int offset,
 		int& valueLength, char* value) {
-	this->readInteger(data, offset, valueLength);
+	readInteger(data, offset, valueLength);
 	memcpy((void*) value, (char*) data + offset + sizeof(int), valueLength);
 	value[valueLength] = '\0';
 }
 
 void RecordBasedFileManager::readVarchar(void* data, int& valueLength,
 		char* value) {
-	this->readVarchar(data, 0, valueLength, value);
+	readVarchar(data, 0, valueLength, value);
 }
 
 void RecordBasedFileManager::loadSlotItemInfos(const void *data, int slotIndex,
@@ -1030,7 +1053,7 @@ unsigned RecordBasedFileManager::calculateRecordLength(
 				value = (char*) malloc(recordDescriptor[i].length);
 				char *charData = new char[PAGE_SIZE];
 				int varcharLength = 0;
-				this->readVarchar((byte*) data + valueOffset, varcharLength,
+				readVarchar((byte*) data + valueOffset, varcharLength,
 						charData);
 				delete[] charData;
 				valueOffset += sizeof(int);
@@ -1092,7 +1115,7 @@ void RecordBasedFileManager::convertAPIData2StoreFormat(
 				value = (char*) malloc(recordDescriptor[i].length);
 				char *charData = new char[PAGE_SIZE];
 				int varcharLength = 0;
-				this->readVarchar((byte*) APIData + apiDataOffset,
+				readVarchar((byte*) APIData + apiDataOffset,
 						varcharLength, charData);
 				delete[] charData;
 				apiDataOffset += sizeof(int);
