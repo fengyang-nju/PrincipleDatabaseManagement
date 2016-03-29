@@ -14,13 +14,6 @@ RC testCase_3() {
 	// SELECT * FROM LEFT WHERE B <= 30
 	cerr << endl << "***** In QE Test Case 3 *****" << endl;
 	RC rc = success;
-	vector<Attribute> rightAttrTmp;
-	rm->getAttributes("right",rightAttrTmp);
-	cout<<rightAttrTmp.size()<<endl;
-
-	vector<Attribute> leftAttrTmp;
-	rm->getAttributes("left",leftAttrTmp);
-	cout<<leftAttrTmp.size()<<endl;
 
 	TableScan *ts = new TableScan(*rm, "left");
 	int compVal = 30;

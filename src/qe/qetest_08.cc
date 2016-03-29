@@ -66,7 +66,7 @@ RC testCase_8() {
 			goto clean_up;
 		}
 		// Print left.A
-		cerr << "left.A " << *(int *) ((char *) data + offset + 1) << endl;
+		cerr << "left.A " << *(int *) ((char *) data + offset + 1);
 		offset += sizeof(int);
 
 		// Is an attribute left.B NULL?
@@ -77,7 +77,7 @@ RC testCase_8() {
 		}
 		// Print left.B
 		valueB = *(int *) ((char *) data + offset + 1);
-		cerr << "left.B " << valueB << endl;
+		cerr << " left.B " << valueB;
 		offset += sizeof(int);
 		if (valueB < 100 || valueB > 109) {
 			rc = fail;
@@ -91,7 +91,7 @@ RC testCase_8() {
 			goto clean_up;
 		}
 		// Print left.C
-		cerr << "left.C " << *(float *) ((char *) data + offset + 1) << endl;
+		cerr << " left.C " << *(float *) ((char *) data + offset + 1);
 		offset += sizeof(float);
 
 		// Is an attribute right.B NULL?
@@ -101,7 +101,7 @@ RC testCase_8() {
 			goto clean_up;
 		}
 		// Print right.B
-		cerr << "right.B " << *(int *) ((char *) data + offset + 1) << endl;
+		cerr << " right.B " << *(int *) ((char *) data + offset + 1);
 		offset += sizeof(int);
 
 		// Is an attribute right.C NULL?
@@ -111,7 +111,7 @@ RC testCase_8() {
 			goto clean_up;
 		}
 		// Print right.C
-		cerr << "right.C " << *(float *) ((char *) data + offset + 1) << endl;
+		cerr << " right.C " << *(float *) ((char *) data + offset + 1);
 		offset += sizeof(float);
 
 		// Is an attribute right.D NULL?
@@ -121,7 +121,7 @@ RC testCase_8() {
 			goto clean_up;
 		}
 		// Print right.D
-		cerr << "right.D " << *(int *) ((char *) data + offset + 1) << endl;
+		cerr << " right.D " << *(int *) ((char *) data + offset + 1) << endl;
 		offset += sizeof(int);
 
 		memset(data, 0, bufSize);

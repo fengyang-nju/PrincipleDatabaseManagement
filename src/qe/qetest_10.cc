@@ -117,7 +117,7 @@ int testCase_10() {
 			goto clean_up;
 		}
 		// Print right.D
-		cerr << "  right.D " << *(int *) ((char *) data + offset + 1);
+		cerr << "  right.D " << *(int *) ((char *) data + offset + 1) << endl;
 		offset += sizeof(int);
 
 		memset(data, 0, bufSize);

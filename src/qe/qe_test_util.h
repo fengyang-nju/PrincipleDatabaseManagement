@@ -42,7 +42,7 @@ const unsigned bufSize = 200;
 int createLeftTable() {
 	// Functions Tested;
 	// 1. Create Table
-	cerr << "****Create Left Table****" << endl;
+	cerr << endl << "****Create Left Table****" << endl;
 
 	vector<Attribute> attrs;
 
@@ -69,10 +69,70 @@ int createLeftTable() {
 	return rc;
 }
 
+int createLeftTable2() {
+	// Functions Tested;
+	// 1. Create Table
+	cerr << endl << "****Create Left2 Table****" << endl;
+
+	vector<Attribute> attrs;
+
+	Attribute attr;
+	attr.name = "A";
+	attr.type = TypeInt;
+	attr.length = 4;
+	attrs.push_back(attr);
+
+	attr.name = "B";
+	attr.type = TypeInt;
+	attr.length = 4;
+	attrs.push_back(attr);
+
+	attr.name = "C";
+	attr.type = TypeReal;
+	attr.length = 4;
+	attrs.push_back(attr);
+
+	RC rc = rm->createTable("left2", attrs);
+	if (rc == success) {
+		cerr << "****Left2 Table Created!****" << endl;
+	}
+	return rc;
+}
+
+int createLeftTable3() {
+	// Functions Tested;
+	// 1. Create Table
+	cerr << endl << "****Create Left3 Table****" << endl;
+
+	vector<Attribute> attrs;
+
+	Attribute attr;
+	attr.name = "A";
+	attr.type = TypeInt;
+	attr.length = 4;
+	attrs.push_back(attr);
+
+	attr.name = "B";
+	attr.type = TypeInt;
+	attr.length = 4;
+	attrs.push_back(attr);
+
+	attr.name = "C";
+	attr.type = TypeReal;
+	attr.length = 4;
+	attrs.push_back(attr);
+
+	RC rc = rm->createTable("left3", attrs);
+	if (rc == success) {
+		cerr << "****Left3 Table Created!****" << endl;
+	}
+	return rc;
+}
+
 int createLargeLeftTable() {
 	// Functions Tested;
 	// 1. Create Table
-	cerr << "****Create Large Left Table****" << endl;
+	cerr << endl << "****Create Large Left Table****" << endl;
 
 	vector<Attribute> attrs;
 
@@ -100,10 +160,41 @@ int createLargeLeftTable() {
 }
 
 
+int createLargeLeftTable2() {
+	// Functions Tested;
+	// 1. Create Table
+	cerr << endl << "****Create Large Left2 Table****" << endl;
+
+	vector<Attribute> attrs;
+
+	Attribute attr;
+	attr.name = "A";
+	attr.type = TypeInt;
+	attr.length = 4;
+	attrs.push_back(attr);
+
+	attr.name = "B";
+	attr.type = TypeInt;
+	attr.length = 4;
+	attrs.push_back(attr);
+
+	attr.name = "C";
+	attr.type = TypeReal;
+	attr.length = 4;
+	attrs.push_back(attr);
+
+	RC rc = rm->createTable("largeleft2", attrs);
+	if (rc == success) {
+		cerr << "****Large left2 Table Created!****" << endl;
+	}
+	return rc;
+}
+
+
 int createLeftVarCharTable() {
 	// Functions Tested;
 	// 1. Create Table
-	cerr << "****Create Left Large Table****" << endl;
+	cerr << endl << "****Create Left VarChar Table****" << endl;
 
 	vector<Attribute> attrs;
 
@@ -120,7 +211,7 @@ int createLeftVarCharTable() {
 
 	RC rc = rm->createTable("leftvarchar", attrs);
 	if (rc == success) {
-		cerr << "****Left Var Char Table Created!****" << endl;
+		cerr << "****Left VarChar Table Created!****" << endl;
 	}
 	return rc;
 }
@@ -128,7 +219,7 @@ int createLeftVarCharTable() {
 int createRightTable() {
 	// Functions Tested;
 	// 1. Create Table
-	cerr << "****Create Right Table****" << endl;
+	cerr << endl << "****Create Right Table****" << endl;
 
 	vector<Attribute> attrs;
 
@@ -155,10 +246,40 @@ int createRightTable() {
 	return rc;
 }
 
+int createRightTable2() {
+	// Functions Tested;
+	// 1. Create Table
+	cerr << endl << "****Create Right2 Table****" << endl;
+
+	vector<Attribute> attrs;
+
+	Attribute attr;
+	attr.name = "B";
+	attr.type = TypeInt;
+	attr.length = 4;
+	attrs.push_back(attr);
+
+	attr.name = "C";
+	attr.type = TypeReal;
+	attr.length = 4;
+	attrs.push_back(attr);
+
+	attr.name = "D";
+	attr.type = TypeInt;
+	attr.length = 4;
+	attrs.push_back(attr);
+
+	RC rc = rm->createTable("right2", attrs);
+	if (rc == success) {
+		cerr << "****Right2 Table Created!****" << endl;
+	}
+	return rc;
+}
+
 int createLargeRightTable() {
 	// Functions Tested;
 	// 1. Create Table
-	cerr << "****Create Large Right Table****" << endl;
+	cerr << endl << "****Create Large Right Table****" << endl;
 
 	vector<Attribute> attrs;
 
@@ -185,10 +306,40 @@ int createLargeRightTable() {
 	return rc;
 }
 
+int createLargeRightTable2() {
+	// Functions Tested;
+	// 1. Create Table
+	cerr << endl << "****Create Large Right2 Table****" << endl;
+
+	vector<Attribute> attrs;
+
+	Attribute attr;
+	attr.name = "B";
+	attr.type = TypeInt;
+	attr.length = 4;
+	attrs.push_back(attr);
+
+	attr.name = "C";
+	attr.type = TypeReal;
+	attr.length = 4;
+	attrs.push_back(attr);
+
+	attr.name = "D";
+	attr.type = TypeInt;
+	attr.length = 4;
+	attrs.push_back(attr);
+
+	RC rc = rm->createTable("largeright2", attrs);
+	if (rc == success) {
+		cerr << "****Large Right2 Table Created!****" << endl;
+	}
+	return rc;
+}
+
 int createRightVarCharTable() {
 	// Functions Tested;
 	// 1. Create Table
-	cerr << "****Create Right Large Table****" << endl;
+	cerr << endl << "****Create Right VarChar Table****" << endl;
 
 	vector<Attribute> attrs;
 
@@ -205,7 +356,7 @@ int createRightVarCharTable() {
 
 	RC rc = rm->createTable("rightvarchar", attrs);
 	if (rc == success) {
-		cerr << "****Right Var Char Table Created!****" << endl;
+		cerr << "****Right VarChar Table Created!****" << endl;
 	}
 	return rc;
 }
@@ -213,7 +364,7 @@ int createRightVarCharTable() {
 int createGroupTable() {
 	// Functions Tested;
 	// 1. Create Table
-	cerr << "****Create Group Table****" << endl;
+	cerr << endl << "****Create Group Table****" << endl;
 
 	vector<Attribute> attrs;
 
@@ -429,6 +580,142 @@ clean_up:
 	return rc;
 }
 
+int populateLeftTable2() {
+	// Functions Tested
+	// 1. InsertTuple
+	RC rc = success;
+	RID rid;
+	void *buf = malloc(bufSize);
+
+	// GetAttributes
+    vector<Attribute> attrs;
+    rc = rm->getAttributes("left2", attrs);
+    assert(rc == success && "RelationManager::getAttributes() should not fail.");
+
+    int nullAttributesIndicatorActualSize = getActualByteForNullsIndicator(attrs.size());
+    unsigned char *nullsIndicator = (unsigned char *) malloc(nullAttributesIndicatorActualSize);
+	memset(nullsIndicator, 0, nullAttributesIndicatorActualSize);
+
+    unsigned char *nullsIndicator2 = (unsigned char *) malloc(nullAttributesIndicatorActualSize);
+	memset(nullsIndicator, 0, nullAttributesIndicatorActualSize);
+	nullsIndicator2[0] = 128; // 10000000: column A - null
+
+	for (int i = 0; i < tupleCount; ++i) {
+		memset(buf, 0, bufSize);
+
+		// Prepare the tuple data for insertion
+		// a in [0,99], b in [10, 109], c in [50, 149.0]
+		int a = i;
+		int b = i + 10;
+		float c = (float) (i + 50);
+
+		if (i % 2 == 1) {
+			prepareLeftTuple(attrs.size(), nullsIndicator2, a, b, c, buf);
+		} else {
+			prepareLeftTuple(attrs.size(), nullsIndicator, a, b, c, buf);
+		}
+
+		rc = rm->insertTuple("left2", buf, rid);
+		if (rc != success) {
+			goto clean_up;
+		}
+	}
+
+clean_up:
+	free(buf);
+	return rc;
+}
+
+int populateLeftTable3(vector<RID> &rids) {
+	// Functions Tested
+	// 1. InsertTuple
+	RC rc = success;
+	RID rid;
+	void *buf = malloc(bufSize);
+
+	// GetAttributes
+    vector<Attribute> attrs;
+    rc = rm->getAttributes("left3", attrs);
+    assert(rc == success && "RelationManager::getAttributes() should not fail.");
+
+    int nullAttributesIndicatorActualSize = getActualByteForNullsIndicator(attrs.size());
+    unsigned char *nullsIndicator = (unsigned char *) malloc(nullAttributesIndicatorActualSize);
+	memset(nullsIndicator, 0, nullAttributesIndicatorActualSize);
+
+    unsigned char *nullsIndicator3 = (unsigned char *) malloc(nullAttributesIndicatorActualSize);
+	memset(nullsIndicator, 0, nullAttributesIndicatorActualSize);
+	nullsIndicator3[0] = 0; // 00000000: no null fields
+
+	for (int i = 0; i < 3; ++i) {
+		memset(buf, 0, bufSize);
+
+		// Prepare the tuple data for insertion
+		// a in [0,2], b in [10, 12], c in [50.0, 52.0]
+		int a = i;
+		int b = i + 10;
+		float c = (float) (i + 50);
+
+		prepareLeftTuple(attrs.size(), nullsIndicator3, a, b, c, buf);
+
+		rc = rm->insertTuple("left3", buf, rid);
+		rids.push_back(rid);
+		if (rc != success) {
+			goto clean_up;
+		}
+	}
+
+clean_up:
+	free(buf);
+	return rc;
+}
+
+int updateLeftTable3(vector<RID> &rids) {
+	// Functions Tested
+	// 1. updateTuple
+	// 2. deleteTuple
+	RC rc = success;
+	RID rid;
+	void *buf = malloc(bufSize);
+
+	// GetAttributes
+    vector<Attribute> attrs;
+    rc = rm->getAttributes("left3", attrs);
+    assert(rc == success && "RelationManager::getAttributes() should not fail.");
+
+    int nullAttributesIndicatorActualSize = getActualByteForNullsIndicator(attrs.size());
+    unsigned char *nullsIndicator = (unsigned char *) malloc(nullAttributesIndicatorActualSize);
+	memset(nullsIndicator, 0, nullAttributesIndicatorActualSize);
+
+    unsigned char *nullsIndicator3 = (unsigned char *) malloc(nullAttributesIndicatorActualSize);
+	memset(nullsIndicator, 0, nullAttributesIndicatorActualSize);
+	nullsIndicator3[0] = 0; // 00000000: no null fields
+
+
+	for (int i = 0; i < 2; ++i) {
+		memset(buf, 0, bufSize);
+
+		// Prepare the tuple data for insertion
+		// a in [100,101], b in [110, 111], c in [150.0, 151.0]
+		int a = 100 + i;
+		int b = i + 110;
+		float c = (float) (i + 150);
+
+		prepareLeftTuple(attrs.size(), nullsIndicator3, a, b, c, buf);
+
+		rc = rm->updateTuple("left3", buf, rids[i]);
+		if (rc != success) {
+			goto clean_up;
+		}
+	}
+
+	// delete the last tuple
+	rc = rm->deleteTuple("left3", rids[2]);
+
+clean_up:
+	free(buf);
+	return rc;
+}
+
 int populateLargeLeftTable() {
 	// Functions Tested
 	// 1. InsertTuple
@@ -465,6 +752,81 @@ clean_up:
 	free(buf);
 	return rc;
 }
+
+int populateLargeLeftTable2() {
+	// Functions Tested
+	// 1. InsertTuple
+	RC rc = success;
+	RID rid;
+	void *buf = malloc(bufSize);
+
+	// GetAttributes
+    vector<Attribute> attrs;
+    rc = rm->getAttributes("largeleft2", attrs);
+    assert(rc == success && "RelationManager::getAttributes() should not fail.");
+
+    int nullAttributesIndicatorActualSize = getActualByteForNullsIndicator(attrs.size());
+    unsigned char *nullsIndicator = (unsigned char *) malloc(nullAttributesIndicatorActualSize);
+	memset(nullsIndicator, 0, nullAttributesIndicatorActualSize);
+
+	for (int i = 0; i < largeTupleCount; ++i) {
+		memset(buf, 0, bufSize);
+
+		// Prepare the tuple data for insertion
+		// a in [0,49999], b in [10, 50009], c in [50, 50049.0]
+		int a = i;
+		int b = i + 10;
+		float c = (float) (i + 50);
+		prepareLeftTuple(attrs.size(), nullsIndicator, a, b, c, buf);
+
+		rc = rm->insertTuple("largeleft2", buf, rid);
+		if (rc != success) {
+			goto clean_up;
+		}
+	}
+
+clean_up:
+	free(buf);
+	return rc;
+}
+
+
+int addRecordsToLargeLeftTable2() {
+	// Functions Tested
+	// 1. InsertTuple
+	RC rc = success;
+	RID rid;
+	void *buf = malloc(bufSize);
+
+	// GetAttributes
+    vector<Attribute> attrs;
+    rc = rm->getAttributes("largeleft2", attrs);
+    assert(rc == success && "RelationManager::getAttributes() should not fail.");
+
+	int nullAttributesIndicatorActualSize = getActualByteForNullsIndicator(attrs.size());
+	unsigned char *nullsIndicator = (unsigned char *) malloc(nullAttributesIndicatorActualSize);
+	memset(nullsIndicator, 0, nullAttributesIndicatorActualSize);
+
+	for (int i = largeTupleCount * 2 - 1; i > largeTupleCount; --i) {
+		memset(buf, 0, bufSize);
+
+		// Prepare the tuple data for insertion
+		int a = i;
+		int b = i + 10;
+		float c = (float) (i + 50);
+		prepareLeftTuple(attrs.size(), nullsIndicator, a, b, c, buf);
+
+		rc = rm->insertTuple("largeleft2", buf, rid);
+		if (rc != success) {
+			goto clean_up;
+		}
+	}
+
+clean_up:
+	free(buf);
+	return rc;
+}
+
 
 int populateRightTable() {
 	// Functions Tested
@@ -530,6 +892,43 @@ int populateLargeRightTable() {
 		prepareRightTuple(attrs.size(), nullsIndicator, b, c, d, buf);
 
 		rc = rm->insertTuple("largeright", buf, rid);
+		if (rc != success) {
+			goto clean_up;
+		}
+	}
+
+clean_up:
+	free(buf);
+	return rc;
+}
+
+int populateLargeRightTable2() {
+	// Functions Tested
+	// 1. InsertTuple
+	RC rc = success;
+	RID rid;
+	void *buf = malloc(bufSize);
+
+	// GetAttributes
+    vector<Attribute> attrs;
+    rc = rm->getAttributes("largeright2", attrs);
+    assert(rc == success && "RelationManager::getAttributes() should not fail.");
+
+    int nullAttributesIndicatorActualSize = getActualByteForNullsIndicator(attrs.size());
+    unsigned char *nullsIndicator = (unsigned char *) malloc(nullAttributesIndicatorActualSize);
+	memset(nullsIndicator, 0, nullAttributesIndicatorActualSize);
+
+	for (int i = 0; i < largeTupleCount; ++i) {
+		memset(buf, 0, bufSize);
+
+		// Prepare the tuple data for insertion
+		// b in [20, 50019], c in [25, 50024.0], d in [0, 49999]
+		int b = i + 20;
+		float c = (float) (i + 25);
+		int d = i;
+		prepareRightTuple(attrs.size(), nullsIndicator, b, c, d, buf);
+
+		rc = rm->insertTuple("largeright2", buf, rid);
 		if (rc != success) {
 			goto clean_up;
 		}
@@ -665,12 +1064,48 @@ int createIndexforLeftC() {
 	return rm->createIndex("left", "C");
 }
 
+int createIndexforLeftB2() {
+	return rm->createIndex("left2", "B");
+}
+
+int createIndexforLeftC2() {
+	return rm->createIndex("left2", "C");
+}
+
+int createIndexforLeftB3() {
+	return rm->createIndex("left3", "B");
+}
+
+int createIndexforLeftC3() {
+	return rm->createIndex("left3", "C");
+}
+
 int createIndexforRightB() {
 	return rm->createIndex("right", "B");
 }
 
 int createIndexforRightC() {
 	return rm->createIndex("right", "C");
+}
+
+int createIndexforLargeLeftB() {
+	return rm->createIndex("largeleft", "B");
+}
+
+int createIndexforLargeLeftB2() {
+	return rm->createIndex("largeleft2", "B");
+}
+
+int createIndexforLargeRightB() {
+	return rm->createIndex("largeright", "B");
+}
+
+int createIndexforLargeRightB2() {
+	return rm->createIndex("largeright2", "B");
+}
+
+int createIndexforGroupB() {
+	return rm->createIndex("group", "B");
 }
 
 int deleteAndCreateCatalog() {
@@ -683,6 +1118,16 @@ int deleteAndCreateCatalog() {
   
   return rc;
 }
+
+
+
+
+
+
+
+
+
+
 
 #endif
 

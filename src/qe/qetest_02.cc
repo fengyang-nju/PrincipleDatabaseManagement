@@ -12,13 +12,9 @@ RC testCase_2() {
 	// Create an Index
 	// Load Data
 	// Create an Index
-
+	
 	RC rc = success;
 	cerr << endl << "***** In QE Test Case 2 *****" << endl;
-
-//	vector<Attribute> leftAttrTmp2;
-//	rm->getAttributes("left",leftAttrTmp2);
-//	cout<<leftAttrTmp2.size()<<endl;
 
 	rc = createIndexforRightB();
 	if (rc != success) {
@@ -37,18 +33,6 @@ RC testCase_2() {
 		cerr << "***** createIndexforRightC() failed.  *****" << endl;
 		return rc;
 	}
-
-//	vector<Attribute> rightAttrTmp;
-//	rm->getAttributes("right",rightAttrTmp);
-//	cout<<rightAttrTmp.size()<<endl;
-//
-//	vector<Attribute> leftAttrTmp;
-//	rm->getAttributes("left",leftAttrTmp);
-//	cout<<leftAttrTmp.size()<<endl;
-//
-//	cout<<"-----------------------------------------"<<endl;
-//	rm->table_mapper.clear();
-//	rm->importTableMapper();
 
 	return rc;
 }

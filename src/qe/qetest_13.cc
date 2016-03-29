@@ -14,7 +14,7 @@ RC testCase_13() {
 	// Optional for undergrad solos: +5 extra credit points will be given based on the results of the basic aggregation related tests
 	// 1. Basic aggregation - max
 	// SELECT max(left.B) from left
-    cerr << "***** In QE Test Case 8 *****" << endl;
+    cerr << "***** In QE Test Case 13 *****" << endl;
 
 	RC rc = success;
 
